@@ -94,9 +94,9 @@ This project implements a genetic algorithm to solve a pathfinding problem. The 
 4. **Map File Format:**
 
    - The map file should contain:
-     - `S` for the start position.
-     - `E` for the end position.
-     - `#` for obstacles.
+     - `'S'` for the start position.
+     - `'E'` for the end position.
+     - `'#'` for obstacles.
      - `' '` for walkable paths.
 
 ## Example
