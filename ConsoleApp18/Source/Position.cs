@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace GeneticAlgorithm
+namespace Genetic_Algorithm.Source
 {
     public struct Position
     {

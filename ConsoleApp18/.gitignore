@@ -1,0 +1,24 @@
+# Ignoruj wszystko domyœlnie
+*
+
+# Wyj¹tki - uwzglêdnij pliki i foldery widoczne na drugim screenie
+!/.gitignore
+!/LICENSE
+!/README.md
+!/Logs/
+!/Maps/
+!/Source/
+
+# Ignoruj pliki tymczasowe i kompilacyjne
+.vs/
+*.user
+*.suo
+*.tmp
+*.obj
+*.log
+*.cache
+*.pdb
+*.dll
+*.exe
+bin/
+obj/

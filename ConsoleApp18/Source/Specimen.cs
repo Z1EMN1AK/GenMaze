@@ -1,7 +1,4 @@
-﻿using GeneticAlgorithm;
-
-
-namespace GeneticAlgorithm
+﻿namespace Genetic_Algorithm.Source
 {
     public class Specimen
     {
@@ -64,14 +61,14 @@ namespace GeneticAlgorithm
         public Specimen HeuristicCrossover(Specimen parent1, Random rd)
         {
             // Create new child
-            Specimen child = new Specimen(this.tabSizeC);
+            Specimen child = new Specimen(tabSizeC);
 
-            for (int i = 0; i < this.genTabC.Length; i++)
+            for (int i = 0; i < genTabC.Length; i++)
             {
                 // Take a gene from the fitter parent
-                if ((decimal)rd.NextDouble() < this.fitness / (this.fitness + parent1.fitness + 0.0001m))
+                if ((decimal)rd.NextDouble() < fitness / (fitness + parent1.fitness + 0.0001m))
                 {
-                    child.genTabC[i] = this.genTabC[i];
+                    child.genTabC[i] = genTabC[i];
                 }
                 else
                 {
@@ -82,6 +79,7 @@ namespace GeneticAlgorithm
             return child;
         }
 
+
         public void Fitness(Position actualPosition, Position endPosition, Position mapBoundries, int traversedTiles, bool wallCollision, Options options)
         {
             // Calculate the Euclidean distance from the target
@@ -89,16 +87,16 @@ namespace GeneticAlgorithm
             decimal maxDistance = (decimal)Math.Sqrt(Math.Pow(mapBoundries.x, 2) + Math.Pow(mapBoundries.y, 2)); // Maximal euclidean distance on the map
 
             // Fitness according to the distance
-            decimal distanceScore = 1.0m - (distance / maxDistance);
+            decimal distanceScore = 1.0m - distance / maxDistance;
 
             // Penalty for visiting too many fields
-            decimal penalty = Math.Min(0.2m, 0.002m * (decimal)traversedTiles);
+            decimal penalty = Math.Min(0.2m, 0.02m * traversedTiles);
 
             // Penalty for wall collision
             decimal collisionPenalty = wallCollision ? 0.2m : 0.0m;
 
             // Bonus for reaching the end
-            decimal endBonus = this.reachedEnd ? 0.5m : 0.0m;
+            decimal endBonus = reachedEnd ? 0.5m : 0.0m;
 
             // Calculate the final fitness
             fitness = Math.Max(0, distanceScore - penalty - collisionPenalty + endBonus);
@@ -106,16 +104,14 @@ namespace GeneticAlgorithm
             // If the specimen reached the end set flag
             if (reachedEnd && options.logToFile)
             {
-                LogSpecimenDetails(actualPosition, endPosition);
+                LogSpecimenDetails(actualPosition, endPosition, options);
             }
         }
 
         // Method to log details to a file
-        private void LogSpecimenDetails(Position actualPosition, Position endPosition)
+        private void LogSpecimenDetails(Position actualPosition, Position endPosition, Options options)
         {
-            string logFilePath = Path.Combine(Environment.CurrentDirectory, "Reached End.txt");
-
-            using (StreamWriter sw = new StreamWriter(logFilePath, append: true))
+            using (StreamWriter sw = new StreamWriter(options.logFilePath, append: true))
             {
                 DateTime now = DateTime.Now;
 

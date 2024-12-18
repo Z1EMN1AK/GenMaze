@@ -1,26 +1,46 @@
-﻿using GeneticAlgorithm;
+﻿using LabirynthGenerator;
 using System;
 
-
-namespace GeneticAlgorithm
+namespace Genetic_Algorithm.Source
 {
     public class Population
     {
-        public Specimen[] speciments { get; set; }
-        public Map map { get; set; }
+        public Specimen[] speciments { get; set; } // Array of specimens in the population
+        public Map map { get; set; } // Map object representing the environment
 
-        Position startPos;
-        Position endPos;
+        Position startPos; // Starting position on the map
+        Position endPos; // Ending position on the map
 
-        decimal lastFitness = 0;
+        decimal lastFitness = 0; // Last recorded fitness value
 
-        public Population(int popSize, int mapSizeX, int mapSizeY, string path)
+        // Constructor to initialize the population
+        public Population(int popSize, Options options)
         {
-            map = new Map(mapSizeX, mapSizeY, path);
-
-            for (int x = 0; x < mapSizeX; x++)
+            
+            if(options.generateMap)
             {
-                for (int y = 0; y < mapSizeY; y++)
+                Console.Clear();
+
+                int x, y;
+
+                Console.Write("Enter the width of the map: ");
+                x = int.Parse(Console.ReadLine());
+
+                Console.Write("Enter the height of the map: ");
+                y = int.Parse(Console.ReadLine());
+
+                LabGen labGen = new LabGen(x, y); // Initialize the labyrinth generator
+
+                map = new Map(labGen.Generate()); // Generate the labyrinth
+
+            } else map = new Map(options.path); // Initialize the map
+
+            
+
+            // Find the start and end positions on the map
+            for (int x = 0; x < map.mapSizeX; x++)
+            {
+                for (int y = 0; y < map.mapSizeY; y++)
                 {
                     if (map.map[x][y] == 'S')
                     {
@@ -35,56 +55,57 @@ namespace GeneticAlgorithm
                 }
             }
 
-            speciments = new Specimen[popSize];
+            speciments = new Specimen[popSize]; // Initialize the array of specimens
 
-            int genSize = (mapSizeX + mapSizeY) * 4; // We are assuming twice the size of the map
+            int genSize = (map.mapSizeX + map.mapSizeY) * 4; // Calculate the size of the genetic code
 
+            // Create specimens with the calculated genetic code size
             for (int i = 0; i < popSize; i++)
             {
                 speciments[i] = new Specimen(genSize);
             }
         }
 
+        // Method to sort the specimens based on their fitness
         public void Sort()
         {
             Array.Sort(speciments, (a, b) => b.fitness.CompareTo(a.fitness));
         }
 
+        // Method to display a specific specimen
         public void Show(int specimentNumber)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            //speciments[specimentNumber].PrintB();
-            speciments[specimentNumber].PrintG();
+            speciments[specimentNumber].PrintG(); // Print the genetic code of the specimen
 
+            // Change the console color based on the fitness comparison
             if (speciments[specimentNumber].fitness > lastFitness)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
             }
-
             else if (speciments[specimentNumber].fitness < lastFitness)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
             }
 
-            lastFitness = speciments[specimentNumber].fitness;
+            lastFitness = speciments[specimentNumber].fitness; // Update the last fitness value
 
             Console.Write("Fitness: ");
             Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine(speciments[specimentNumber].fitness);
+            Console.WriteLine(speciments[specimentNumber].fitness); // Display the fitness value
 
-            char[][] tempTab = map.map.Select(row => row.ToArray()).ToArray();
+            char[][] tempTab = map.map.Select(row => row.ToArray()).ToArray(); // Create a copy of the map
 
-            Position actualPos = startPos;
+            Position actualPos = startPos; // Set the starting position
 
+            // Traverse the map based on the genetic code
             for (int i = 0; i < speciments[specimentNumber].genTabC.Length; i++)
             {
                 switch (speciments[specimentNumber].genTabC[i])
                 {
-                    case 'L':
-
+                    case 'L': // Move left
                         if (actualPos.x == 0)
                             break;
-
                         else if (actualPos.x > 0 && tempTab[actualPos.x - 1][actualPos.y] != '#')
                         {
                             actualPos.x--;
@@ -92,11 +113,9 @@ namespace GeneticAlgorithm
                         }
                         break;
 
-                    case 'R':
-
+                    case 'R': // Move right
                         if (actualPos.x > map.mapBoundries.x - 1)
                             break;
-
                         else if (actualPos.x < map.mapBoundries.x - 1 && tempTab[actualPos.x + 1][actualPos.y] != '#')
                         {
                             actualPos.x++;
@@ -104,11 +123,9 @@ namespace GeneticAlgorithm
                         }
                         break;
 
-                    case 'U':
-
+                    case 'U': // Move up
                         if (actualPos.y == 0)
                             break;
-
                         else if (actualPos.y > 0 && tempTab[actualPos.x][actualPos.y - 1] != '#')
                         {
                             actualPos.y--;
@@ -116,11 +133,9 @@ namespace GeneticAlgorithm
                         }
                         break;
 
-                    case 'D':
-
+                    case 'D': // Move down
                         if (actualPos.y > map.mapBoundries.y - 1)
                             break;
-
                         else if (actualPos.y < map.mapBoundries.y - 1 && tempTab[actualPos.x][actualPos.y + 1] != '#')
                         {
                             actualPos.y++;
@@ -130,6 +145,7 @@ namespace GeneticAlgorithm
                 }
             }
 
+            // Display the map with the path taken by the specimen
             for (int i = 0; i < map.mapBoundries.x; i++)
             {
                 for (int j = 0; j < map.mapBoundries.y; j++)
@@ -142,7 +158,6 @@ namespace GeneticAlgorithm
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                     }
-
                     else if (tempTab[i][j] == 'E')
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
@@ -154,82 +169,76 @@ namespace GeneticAlgorithm
                 Console.WriteLine();
             }
 
-            tempTab = map.map.Select(row => row.ToArray()).ToArray();
+            tempTab = map.map.Select(row => row.ToArray()).ToArray(); // Reset the map copy
         }
 
+        // Method to evaluate the fitness of each specimen
         public void Evaluate(Options options)
         {
-            char[][] tempTab = map.map.Select(row => row.ToArray()).ToArray();
+            char[][] tempTab = map.map.Select(row => row.ToArray()).ToArray(); // Create a copy of the map
 
             foreach (Specimen s in speciments)
             {
-                Position actualPos = new Position { x = startPos.x, y = startPos.y };
+                Position actualPos = new Position { x = startPos.x, y = startPos.y }; // Set the starting position
 
-                bool[][] visited = new bool[map.mapBoundries.x][];
-                for (int i = 0; i < map.mapBoundries.x; i++)
-                {
-                    visited[i] = new bool[map.mapBoundries.y];
-                }
+                bool wallEncountered = false; // Flag to check if a wall is encountered
+                int traversedTiles = 0; // Count of traversed tiles
 
-                bool wallEncountered = false;
-                int traversedTiles = 0;
-
+                // Traverse the map based on the genetic code
                 for (int i = 0; i < s.genTabC.Length; i++)
                 {
-
-                    // Make the move based on the instructions in the genes
                     switch (s.genTabC[i])
                     {
-                        case 'L': // Left
+                        case 'L': // Move left
                             if (actualPos.x > 0 && tempTab[actualPos.x - 1][actualPos.y] != '#')
                             {
                                 if (tempTab[actualPos.x - 1][actualPos.y] == '*')
                                     traversedTiles++;
 
                                 actualPos.x--;
-                                tempTab[actualPos.x][actualPos.y] = '*';  // Set the tile as visited
+                                tempTab[actualPos.x][actualPos.y] = '*'; // Set the tile as visited
                             }
                             else if (tempTab[actualPos.x][actualPos.y] == '#' || tempTab[actualPos.x][actualPos.y] == 'S')
                                 wallEncountered = true;
 
                             break;
 
-                        case 'R': // Right
+                        case 'R': // Move right
                             if (actualPos.x < map.mapBoundries.x - 1 && tempTab[actualPos.x + 1][actualPos.y] != '#')
                             {
                                 if (tempTab[actualPos.x + 1][actualPos.y] == '*')
                                     traversedTiles++;
 
                                 actualPos.x++;
-                                tempTab[actualPos.x][actualPos.y] = '*';  // Set the tile as visited
+                                tempTab[actualPos.x][actualPos.y] = '*'; // Set the tile as visited
                             }
                             else if (tempTab[actualPos.x][actualPos.y] == '#' || tempTab[actualPos.x][actualPos.y] == 'S')
                                 wallEncountered = true;
 
                             break;
 
-                        case 'U': // Up
+                        case 'U': // Move up
                             if (actualPos.y > 0 && tempTab[actualPos.x][actualPos.y - 1] != '#')
                             {
                                 if (tempTab[actualPos.x][actualPos.y - 1] == '*')
                                     traversedTiles++;
 
                                 actualPos.y--;
-                                tempTab[actualPos.x][actualPos.y] = '*';  // Set the tile as visited
+                                tempTab[actualPos.x][actualPos.y] = '*'; // Set the tile as visited
                             }
                             else if (tempTab[actualPos.x][actualPos.y] == '#' || tempTab[actualPos.x][actualPos.y] == 'S')
                                 wallEncountered = true;
 
                             break;
 
-                        case 'D': // Down
+                        case 'D': // Move down
                             if (actualPos.y < map.mapBoundries.y - 1 && tempTab[actualPos.x][actualPos.y + 1] != '#')
                             {
                                 if (tempTab[actualPos.x][actualPos.y + 1] == '*')
                                     traversedTiles++;
 
                                 actualPos.y++;
-                                tempTab[actualPos.x][actualPos.y] = '*';  // Set the tile as visited
+                                tempTab[actualPos.x][actualPos.y] = '*'; // Set the tile as visited
                             }
                             else if (tempTab[actualPos.x][actualPos.y] == '#' || tempTab[actualPos.x][actualPos.y] == 'S')
                                 wallEncountered = true;
@@ -237,6 +246,7 @@ namespace GeneticAlgorithm
                             break;
                     }
 
+                    // Check if the end position is reached
                     if (actualPos.x == endPos.x && actualPos.y == endPos.y)
                         s.reachedEnd = true;
                     else if (wallEncountered)
@@ -244,13 +254,13 @@ namespace GeneticAlgorithm
                         s.reachedEnd = false;
                         break;
                     }
-
                 }
 
+                // Calculate the fitness of the specimen
                 s.Fitness(actualPos, endPos, map.mapBoundries, traversedTiles, wallEncountered, options);
             }
 
-            tempTab = map.map.Select(row => row.ToArray()).ToArray();
+            tempTab = map.map.Select(row => row.ToArray()).ToArray(); // Reset the map copy
         }
     }
 }
