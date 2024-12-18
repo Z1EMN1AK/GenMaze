@@ -97,7 +97,7 @@ This project implements a genetic algorithm to solve a pathfinding problem. The 
      - `S` for the start position.
      - `E` for the end position.
      - `#` for obstacles.
-     - `.` for walkable paths.
+     - `' '` for walkable paths.
 
 ## Example
 
