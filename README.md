@@ -49,7 +49,7 @@ This project implements a genetic algorithm to solve a pathfinding problem. The 
 
 1. **Initialization:**
 
-   - Load the map from a file.
+   - Load the map from a file or generate one using MazeGenerator.
    - Define starting and ending positions.
    - Generate an initial population of specimens.
 
