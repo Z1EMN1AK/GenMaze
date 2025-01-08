@@ -42,6 +42,9 @@ This project implements a genetic algorithm to solve a pathfinding problem. The 
 
   - Entry point of the application. Handles user input for configuration and starts the algorithm.
 
+ - 'MazeGenerator'
+   - The LabGen class in MazeGenerator.cs is used to generate a maze using a depth-first search (DFS) algorithm.
+
 ## How It Works
 
 1. **Initialization:**
