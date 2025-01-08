@@ -1,5 +1,5 @@
-﻿using LabirynthGenerator;
-using System;
+﻿using System;
+using MazeGenerator;
 
 namespace Genetic_Algorithm.Source
 {

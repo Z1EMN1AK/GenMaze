@@ -132,6 +132,14 @@ Here is an example map file:
 - **Population Size:** Modify the initial population size in `AlgoObject`.
 - **Mutation Rate:** Change the mutation rate logic in `AlgoObject`.
 
+## Changelog
+### Update 08.01.2025
+- Added MazeGenerator.cs with DFS algorithm for maze generation.
+- Improved constructors for better initialization.
+- Added dynamic mutation rate adjustment and map generation logic.
+- Updated fitness evaluation logic.
+- General code readability and efficiency improvements.
+
 ## Future Enhancements
 
 - Add a graphical interface for better visualization.
