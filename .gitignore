@@ -1,7 +1,7 @@
-# Ignoruj wszystko domyœlnie
+// This file is used to ignore files and directories in the repository.
 *
 
-# Wyj¹tki - uwzglêdnij pliki i foldery widoczne na drugim screenie
+
 !/.gitignore
 !/LICENSE
 !/README.md
@@ -9,7 +9,6 @@
 !/Maps/
 !/Source/
 
-# Ignoruj pliki tymczasowe i kompilacyjne
 .vs/
 *.user
 *.suo
