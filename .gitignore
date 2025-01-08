@@ -1,9 +1,0 @@
-# Ignore all files and folders
-*
-
-# Exceptions - add folders Logs, Maps, Source and files .gitignore and README.md
-!Logs/
-!Maps/
-!Source/
-!.gitignore
-!README.md
